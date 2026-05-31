@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Inventario - Camisas Deportivas</title>
     <style>
-      /* DISEÑO ADAPTADO PARA PANTALLAS TÁCTILES (MOBILE-FIRST) */
-      * {
-        box-sizing: border-box;
-      }
+      /* DISEÑO ADAPTADO PARA PANTALLAS TÁCTILES */
+      * { box-sizing: border-box; }
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         background-color: #f8f9fa;
@@ -29,131 +27,39 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         margin-bottom: 16px;
       }
-      h1 {
-        font-size: 1.4rem;
-        margin-top: 0;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #343a40;
-        padding-bottom: 8px;
-        text-align: center;
-      }
-      h2 {
-        font-size: 1.1rem;
-        margin-top: 0;
-        margin-bottom: 12px;
-        color: #495057;
-      }
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-bottom: 10px;
-      }
+      h1 { font-size: 1.4rem; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #343a40; padding-bottom: 8px; text-align: center; }
+      h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: 12px; color: #495057; }
+      .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
       .form-group input, .form-group select, button {
-        padding: 12px;
-        font-size: 16px !important;
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        width: 100%;
-        outline: none;
+        padding: 12px; font-size: 16px !important; border: 1px solid #ced4da; border-radius: 6px; width: 100%; outline: none;
       }
-      .form-group input:focus, .form-group select:focus {
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-      }
-      button {
-        background-color: #212529;
-        color: #fff;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        min-height: 46px;
-      }
-      button:active {
-        background-color: #555;
-      }
-      button:disabled {
-        background-color: #ced4da;
-        color: #6c757d;
-        cursor: not-allowed;
-      }
+      .form-group input:focus, .form-group select:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); }
+      button { background-color: #212529; color: #fff; border: none; font-weight: bold; cursor: pointer; transition: background-color 0.2s; min-height: 46px; }
+      button:active { background-color: #555; }
+      button:disabled { background-color: #ced4da; color: #6c757d; cursor: not-allowed; }
       button.btn-vender { background-color: #0d6efd; padding: 8px 12px; width: auto; min-height: 38px; }
       button.btn-eliminar { background-color: #dc3545; padding: 8px 12px; width: auto; min-height: 38px; }
       button.btn-limpiar { background-color: #6c757d; margin-top: 10px; }
-
-      .table-responsive {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        margin-top: 8px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 400px;
-        font-size: 14px;
-      }
-      th, td {
-        padding: 12px 10px;
-        text-align: left;
-        border-bottom: 1px solid #dee2e6;
-        vertical-align: middle;
-      }
-      th {
-        background-color: #f1f3f5;
-        font-weight: 600;
-      }
-      .fila-grupo {
-        background-color: #f8f9fa;
-        font-weight: bold;
-        cursor: pointer;
-      }
+      .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid #dee2e6; border-radius: 6px; margin-top: 8px; }
+      table { width: 100%; border-collapse: collapse; min-width: 400px; font-size: 14px; }
+      th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #dee2e6; vertical-align: middle; }
+      th { background-color: #f1f3f5; font-weight: 600; }
+      .fila-grupo { background-color: #f8f9fa; font-weight: bold; cursor: pointer; }
       .icono-toggle { float: right; color: #6c757d; }
       .celda-vacia { color: #adb5bd; text-align: center; width: 20px; padding-right: 0; }
       .etiqueta-ubicacion { font-size: 0.8rem; background-color: #e9ecef; padding: 4px 6px; border-radius: 4px; color: #495057; font-weight: 500; }
       .acciones { display: flex; gap: 6px; }
       .sin-stock { color: #adb5bd; font-style: italic; }
-      
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(3px);
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-      }
-      .modal-content {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        width: 100%;
-        max-width: 360px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        position: relative;
-        animation: abrirModal 0.2s ease-out;
-      }
-      @keyframes abrirModal {
-        from { transform: scale(0.9); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-      }
+      .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px); justify-content: center; align-items: center; padding: 20px; }
+      .modal-content { background-color: #fff; padding: 20px; border-radius: 8px; width: 100%; max-width: 360px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; animation: abrirModal 0.2s ease-out; }
+      @keyframes abrirModal { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
       .close-btn { position: absolute; top: 12px; right: 16px; color: #adb5bd; font-size: 28px; cursor: pointer; }
-      #loader { text-align: center; color: #6c757d; font-size: 14px; font-style: italic; margin-bottom: 10px; }
       .fecha-venta { font-size: 0.8rem; color: #6c757d; }
     </style>
   </head>
   <body>
     <div class="container">
       <h2>Stock por Ubicación / Persona</h2>
-      <div id="loader">Cargando base de datos en tiempo real...</div>
       <div class="table-responsive">
         <table>
           <thead>
@@ -238,50 +144,63 @@
     </div>
 
     <script type="module">
-      // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+      import { 
+        getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy 
+      } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDRc92s7zKIxfPeL_iZGjLTLaezcH67RL4",
-  authDomain: "inventario-2609e.firebaseapp.com",
-  projectId: "inventario-2609e",
-  storageBucket: "inventario-2609e.firebasestorage.app",
-  messagingSenderId: "560309446377",
-  appId: "1:560309446377:web:aa3cdc154965b62a7bf278"
-};
+      // ⚠️ REEMPLAZA ESTOS DATOS CON LOS DE TU CONSOLA DE FIREBASE
+      const firebaseConfig = {
+    apiKey: "AIzaSyBgFUEi1SwD620PqESu2khrjpXL90hknk0",
+    authDomain: "inventario-e7fcb.firebaseapp.com",
+    projectId: "inventario-e7fcb",
+    storageBucket: "inventario-e7fcb.firebasestorage.app",
+    messagingSenderId: "835758443112",
+    appId: "1:835758443112:web:d1120943def2344f5989dd"
+  };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+      // Inicializar Firebase y Firestore
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
 
+      // Estado local de la app (se sincroniza automáticamente con la nube)
       let inventario = [];
       let historialVentas = [];
       let idProductoEnVenta = null;
       const estadoPestanas = {};
 
+      // Elementos del DOM
       const formulario = document.getElementById("formulario-inventario");
       const tablaInventario = document.getElementById("tabla-inventario");
       const tablaHistorial = document.getElementById("tabla-historial");
       const tablaResumen = document.getElementById("tabla-resumen-ubicaciones");
       const modalVenta = document.getElementById("modal-venta");
-      const loader = document.getElementById("loader");
 
+      // --- ESCUCHADORES EN TIEMPO REAL (Firebase -> UI) ---
+      
+      // Sincronizar Inventario
       onSnapshot(collection(db, "inventario"), (snapshot) => {
-        inventario = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        inventario = [];
+        snapshot.forEach((doc) => {
+          inventario.push({ id: doc.id, ...doc.data() });
+        });
         actualizarResumenUbicaciones();
         actualizarTablaInventario();
-        loader.style.display = "none";
       });
 
+      // Sincronizar Historial (Ordenado por fecha más reciente)
       const qHistorial = query(collection(db, "historial"), orderBy("timestamp", "desc"));
       onSnapshot(qHistorial, (snapshot) => {
-        historialVentas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        historialVentas = [];
+        snapshot.forEach((doc) => {
+          historialVentas.push({ id: doc.id, ...doc.data() });
+        });
         actualizarTablaHistorial();
       });
 
-      const actualizarResumenUbicaciones = () => {
+      // --- FUNCIONES DE RENDERIZADO DE INTERFAZ ---
+
+      function actualizarResumenUbicaciones() {
         const conteo = inventario.reduce((acc, item) => {
           const ubi = item.ubicacion || "No asignada";
           acc[ubi] = (acc[ubi] || 0) + item.cantidad;
@@ -293,14 +212,14 @@ const app = initializeApp(firebaseConfig);
           return;
         }
         tablaResumen.innerHTML = ubicaciones.map(([ubi, total]) => `<tr><td><strong>${ubi}</strong></td><td>${total} uds</td></tr>`).join("");
-      };
+      }
 
-      const togglePestana = (claveGrupo) => {
+      function togglePestana(claveGrupo) {
         estadoPestanas[claveGrupo] = !estadoPestanas[claveGrupo];
         actualizarTablaInventario();
-      };
+      }
 
-      const actualizarTablaInventario = () => {
+      function actualizarTablaInventario() {
         if (inventario.length === 0) {
           tablaInventario.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#6c757d;">Inventario vacío.</td></tr>';
           return;
@@ -338,9 +257,9 @@ const app = initializeApp(firebaseConfig);
           }
           return html;
         }).join("");
-      };
+      }
 
-      const actualizarTablaHistorial = () => {
+      function actualizarTablaHistorial() {
         if (historialVentas.length === 0) {
           tablaHistorial.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#6c757d;">Ninguna venta grabada.</td></tr>';
           return;
@@ -353,14 +272,13 @@ const app = initializeApp(firebaseConfig);
             <td><strong>${venta.cantidadVendida}</strong></td>
           </tr>
         `).join("");
-      };
+      }
 
+      // --- ACCIONES ESCRITURA EN FIREBASE (CRUD) ---
+
+      // Agregar nuevo producto a Firestore
       formulario.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const btn = document.getElementById("btn-guardar");
-        btn.disabled = true;
-        btn.innerText = "Guardando...";
-
         const equipo = document.getElementById("equipo").value.trim();
         const talla = document.getElementById("talla").value;
         const ubicacion = document.getElementById("ubicacion").value.trim();
@@ -368,34 +286,80 @@ const app = initializeApp(firebaseConfig);
         const precio = parseFloat(document.getElementById("precio").value);
 
         try {
-          await addDoc(collection(db, "inventario"), { equipo, talla, ubicacion, cantidad, precio });
+          await addDoc(collection(db, "inventario"), {
+            equipo, talla, ubicacion, cantidad, precio
+          });
+
+          // Limpiar inputs
           document.getElementById("cantidad").value = "";
           document.getElementById("precio").value = "";
+          document.getElementById("equipo").focus();
         } catch (error) {
-          alert("Error de conexión al guardar.");
-        } finally {
-          btn.disabled = false;
-          btn.innerText = "Guardar en Inventario";
+          console.error("Error al agregar producto: ", error);
         }
       });
 
-      const eliminarArticulo = async (id) => {
-        if (confirm("¿Borrar este registro?")) {
-          try { await deleteDoc(doc(db, "inventario", id)); } catch (e) { alert("Error al eliminar."); }
-        }
-      };
-
-      const limpiarHistorial = async () => {
-        if (confirm("¿Borrar TODO el historial de ventas permanentemente?")) {
+      // Eliminar de Firestore
+      async function eliminarArticulo(id) {
+        if (confirm("¿Borrar este registro permanentemente de la nube?")) {
           try {
-            const querySnapshot = await getDocs(collection(db, "historial"));
-            querySnapshot.forEach(async (d) => { await deleteDoc(doc(db, "historial", d.id)); });
-          } catch (e) { alert("Error al vaciar."); }
+            await deleteDoc(doc(db, "inventario", id));
+          } catch (error) {
+            console.error("Error al eliminar: ", error);
+          }
         }
-      };
+      }
 
-      const abrirModalVenta = (id) => {
-        const producto = inventario.find((item) => item.id === id); // CORREGIDO AQUÍ
+      // Confirmar venta (Resta del stock y añade al historial)
+      async function confirmarVenta() {
+        const cant = parseInt(document.getElementById("cantidad-vender").value, 10);
+        const producto = inventario.find((item) => item.id === idProductoEnVenta);
+
+        if (producto && cant > 0 && cant <= producto.cantidad) {
+          try {
+            // 1. Actualizar el stock del producto
+            const productoRef = doc(db, "inventario", idProductoEnVenta);
+            await updateDoc(productoRef, {
+              cantidad: producto.cantidad - cant
+            });
+
+            // 2. Crear el reporte en la colección "historial"
+            const f = new Date();
+            await addDoc(collection(db, "historial"), {
+              equipo: producto.equipo,
+              talla: producto.talla,
+              ubicacion: producto.ubicacion,
+              cantidadVendida: cant,
+              fecha: `${f.toLocaleDateString()} ${f.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+              timestamp: Date.now() // Sirve para ordenar cronológicamente
+            });
+
+            cerrarModal();
+          } catch (error) {
+            console.error("Error al procesar la venta: ", error);
+          }
+        } else { 
+          alert("Cantidad inválida."); 
+        }
+      }
+
+      // Limpiar historial completo en bucle
+      async function limpiarHistorial() {
+        if (confirm("¿Borrar TODO el historial de ventas de la base de datos?")) {
+          try {
+            for (const venta of historialVentas) {
+              await deleteDoc(doc(db, "historial", venta.id));
+            }
+          } catch (error) {
+            console.error("Error al limpiar historial: ", error);
+          }
+        }
+      }
+
+      // --- CONTROL DEL MODAL DE VENTAS ---
+
+      function abrirModalVenta(id) {
+        const producto = inventario.find((item) => item.id === id);
         if (!producto) return;
         idProductoEnVenta = id;
         document.getElementById("info-producto-venta").innerText = `${producto.equipo} (Talla ${producto.talla})`;
@@ -404,37 +368,20 @@ const app = initializeApp(firebaseConfig);
         inputC.value = 1;
         inputC.max = producto.cantidad;
         modalVenta.style.display = "flex";
-      };
+      }
 
-      const cerrarModal = () => { modalVenta.style.display = "none"; idProductoEnVenta = null; };
+      function cerrarModal() { 
+        modalVenta.style.display = "none"; 
+        idProductoEnVenta = null; 
+      }
 
-      const confirmarVenta = async () => {
-        const cant = parseInt(document.getElementById("cantidad-vender").value, 10);
-        const prod = inventario.find((item) => item.id === idProductoEnVenta);
-        const btn = document.getElementById("btn-confirmar-venta");
-
-        if (prod && cant > 0 && cant <= prod.cantidad) {
-          btn.disabled = true;
-          btn.innerText = "Procesando...";
-          try {
-            await updateDoc(doc(db, "inventario", idProductoEnVenta), { cantidad: prod.cantidad - cant });
-            const f = new Date();
-            await addDoc(collection(db, "historial"), {
-              equipo: prod.equipo, talla: prod.talla, ubicacion: prod.ubicacion, cantidadVendida: cant,
-              fecha: `${f.toLocaleDateString()} ${f.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
-              timestamp: f.getTime()
-            });
-            cerrarModal();
-          } catch (e) { alert("Error en el proceso."); } finally { btn.disabled = false; btn.innerText = "Confirmar Venta"; }
-        } else { alert("Cantidad inválida."); }
-      };
-
+      // Vincular funciones al objeto global 'window' para que sigan funcionando los onclick del HTML
       window.togglePestana = togglePestana;
-      window.eliminarArticulo = eliminarArticulo;
-      window.limpiarHistorial = limpiarHistorial;
       window.abrirModalVenta = abrirModalVenta;
+      window.eliminarArticulo = eliminarArticulo;
       window.cerrarModal = cerrarModal;
       window.confirmarVenta = confirmarVenta;
+      window.limpiarHistorial = limpiarHistorial;
     </script>
   </body>
 </html>
