@@ -259,20 +259,30 @@
         }).join("");
       }
 
-      function actualizarTablaHistorial() {
-        if (historialVentas.length === 0) {
-          tablaHistorial.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#6c757d;">Ninguna venta grabada.</td></tr>';
-          return;
-        }
-        tablaHistorial.innerHTML = historialVentas.map((venta) => `
-          <tr>
-            <td class="fecha-venta">${venta.fecha.split(" ")[0]}<br><small>${venta.fecha.split(" ")[1] || ""}</small></td>
-            <td>${venta.equipo} <br><small style="color:#6c757d;">(${venta.ubicacion})</small></td>
-            <td>${venta.talla}</td>
-            <td><strong>${venta.cantidadVendida}</strong></td>
-          </tr>
-        `).join("");
-      }
+ function actualizarTablaHistorial() {
+  if (historialVentas.length === 0) {
+    tablaHistorial.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#6c757d;">Ninguna venta grabada.</td></tr>';
+    return;
+  }
+  
+  tablaHistorial.innerHTML = historialVentas.map((venta) => {
+    // 🛡️ Escudo: Si por alguna razón 'fecha' no existe, evita que la app se rompa
+    const fechaTexto = venta.fecha || "00/00/0000 00:00";
+    const partesFecha = fechaTexto.split(" ");
+    const fechaDia = partesFecha[0] || "S/F";
+    const fechaHora = partesFecha[1] || "";
+
+    return `
+      <tr>
+        <td class="fecha-venta">${fechaDia}<br><small>${fechaHora}</small></td>
+        <td>${venta.equipo || "Modelo"} <br><small style="color:#6c757d;">(${venta.ubicacion || "Sin lugar"})</small></td>
+        <td>${venta.talla || "-"}</td>
+        <td><strong>${venta.cantidadVendida || 0}</strong></td>
+      </tr>
+    `;
+  }).join("");
+}
+
 
       // --- ACCIONES ESCRITURA EN FIREBASE (CRUD) ---
 
