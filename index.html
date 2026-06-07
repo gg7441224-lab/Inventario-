@@ -1,397 +1,232 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Inventario - Camisas Deportivas</title>
-    <style>
-      /* DISEÑO ADAPTADO PARA PANTALLAS TÁCTILES */
-      * { box-sizing: border-box; }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        background-color: #f8f9fa;
-        color: #212529;
-        margin: 0;
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .container {
-        background-color: #ffffff;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 16px;
-        width: 100%;
-        max-width: 500px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        margin-bottom: 16px;
-      }
-      h1 { font-size: 1.4rem; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #343a40; padding-bottom: 8px; text-align: center; }
-      h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: 12px; color: #495057; }
-      .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
-      .form-group input, .form-group select, button {
-        padding: 12px; font-size: 16px !important; border: 1px solid #ced4da; border-radius: 6px; width: 100%; outline: none;
-      }
-      .form-group input:focus, .form-group select:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); }
-      button { background-color: #212529; color: #fff; border: none; font-weight: bold; cursor: pointer; transition: background-color 0.2s; min-height: 46px; }
-      button:active { background-color: #555; }
-      button:disabled { background-color: #ced4da; color: #6c757d; cursor: not-allowed; }
-      button.btn-vender { background-color: #0d6efd; padding: 8px 12px; width: auto; min-height: 38px; }
-      button.btn-eliminar { background-color: #dc3545; padding: 8px 12px; width: auto; min-height: 38px; }
-      button.btn-limpiar { background-color: #6c757d; margin-top: 10px; }
-      .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid #dee2e6; border-radius: 6px; margin-top: 8px; }
-      table { width: 100%; border-collapse: collapse; min-width: 400px; font-size: 14px; }
-      th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #dee2e6; vertical-align: middle; }
-      th { background-color: #f1f3f5; font-weight: 600; }
-      .fila-grupo { background-color: #f8f9fa; font-weight: bold; cursor: pointer; }
-      .icono-toggle { float: right; color: #6c757d; }
-      .celda-vacia { color: #adb5bd; text-align: center; width: 20px; padding-right: 0; }
-      .etiqueta-ubicacion { font-size: 0.8rem; background-color: #e9ecef; padding: 4px 6px; border-radius: 4px; color: #495057; font-weight: 500; }
-      .acciones { display: flex; gap: 6px; }
-      .sin-stock { color: #adb5bd; font-style: italic; }
-      .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px); justify-content: center; align-items: center; padding: 20px; }
-      .modal-content { background-color: #fff; padding: 20px; border-radius: 8px; width: 100%; max-width: 360px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; animation: abrirModal 0.2s ease-out; }
-      @keyframes abrirModal { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-      .close-btn { position: absolute; top: 12px; right: 16px; color: #adb5bd; font-size: 28px; cursor: pointer; }
-      .fecha-venta { font-size: 0.8rem; color: #6c757d; }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h2>Stock por Ubicación / Persona</h2>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>Lugar / Persona</th>
-              <th>Total Camisas</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-resumen-ubicaciones"></tbody>
-        </table>
-      </div>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Inventario - Camisas Deportivas</title>
+<style>
+*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f9fa;color:#212529;margin:0;padding:0}
+.topbar{background:#212529;padding:14px 20px;display:flex;align-items:center;position:sticky;top:0;z-index:900;box-shadow:0 2px 5px rgba(0,0,0,.15)}
+.btn-menu-lateral{background:0 0;border:none;color:#fff;font-size:1.5rem;cursor:pointer;padding:0;margin-right:15px}.app-title{color:#fff;font-weight:700;font-size:1.1rem;letter-spacing:1px}
+.sidebar-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:998;backdrop-filter:blur(2px)}
+.sidebar{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#fff;z-index:999;box-shadow:2px 0 10px rgba(0,0,0,.2);transition:left .3s ease;display:flex;flex-direction:column}
+.sidebar.abierto{left:0}.sidebar-header{background:#212529;color:#fff;padding:20px;display:flex;justify-content:space-between;align-items:center}
+.sidebar-header h2{margin:0;color:#fff;font-size:1.2rem}.btn-cerrar-sidebar{background:0 0;border:none;color:#fff;font-size:1.5rem;padding:0;cursor:pointer}
+.sidebar-content{padding:20px;overflow-y:auto;flex-grow:1}.stat-box{background:#f1f3f5;border-radius:8px;padding:15px;margin-bottom:15px;text-align:center;border:1px solid #dee2e6}
+.stat-box h3{margin:0 0 5px;font-size:.9rem;color:#495057}.stat-box p{margin:0;font-size:1.5rem;font-weight:700;color:#212529}.stat-box.dinero p,.detalle-ubicacion .dinero-ubi,.ganancia-venta{color:#198754;font-weight:700}
+.stat-box.inv-valor p{color:#0d6efd;font-weight:700}
+.detalle-ubicacion{background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:10px;margin-bottom:10px}.detalle-ubicacion h4{margin:0 0 8px;font-size:1rem;border-bottom:1px solid #eee;padding-bottom:5px}
+.detalle-ubicacion div{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px;color:#495057}
+.filtro-box{margin-bottom:12px;padding:10px;background:#f8f9fa;border-radius:6px;border:1px solid #dee2e6;display:flex;gap:8px;flex-wrap:wrap}.filtro-box>div{flex:1;min-width:90px;display:flex;flex-direction:column}.filtro-box label{font-size:.85rem;font-weight:600;color:#495057;margin-bottom:4px}.filtro-box select,.filtro-box input{padding:8px!important;border:1px solid #ced4da;border-radius:6px;font-size:.9rem;background:#fff;margin:0}
+.main-content{padding:16px 12px;display:flex;flex-direction:column;align-items:center}.container{background:#fff;border:1px solid #dee2e6;border-radius:8px;padding:16px;width:100%;max-width:500px;box-shadow:0 4px 6px rgba(0,0,0,.05);margin-bottom:16px}
+h1{font-size:1.4rem;margin:0 0 15px;border-bottom:2px solid #343a40;padding-bottom:8px;text-align:center}h2{font-size:1.1rem;margin:0 0 12px;color:#495057}
+.form-group{display:flex;flex-direction:column;gap:12px;margin-bottom:10px}.form-group input,.form-group select,button{padding:12px;font-size:16px!important;border:1px solid #ced4da;border-radius:6px;width:100%;outline:0}
+.form-group input:focus,.form-group select:focus{border-color:#86b7fe;box-shadow:0 0 0 .25rem rgba(13,110,253,.25)}
+button{background:#212529;color:#fff;border:none;font-weight:700;cursor:pointer;transition:.2s;min-height:46px}button:active{background:#555}button:disabled{background:#ced4da;color:#6c757d;cursor:not-allowed}
+button.btn-vender{background:#0d6efd;padding:8px 12px;width:auto;min-height:38px}
+button.btn-eliminar-cant{background:#ffc107;color:#212529;padding:8px 12px;width:auto;min-height:38px}
+button.btn-eliminar-todo{background:#dc3545;padding:8px 12px;width:auto;min-height:38px}
+button.btn-limpiar{background:#6c757d;margin-top:10px}
+.table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #dee2e6;border-radius:6px;margin-top:8px}
+table{width:100%;border-collapse:collapse;min-width:400px;font-size:14px}th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #dee2e6;vertical-align:middle}
+th{background:#f1f3f5;font-weight:600}.fila-grupo{background:#f8f9fa;font-weight:700;cursor:pointer}.icono-toggle{float:right;color:#6c757d}.celda-vacia{color:#adb5bd;text-align:center;width:20px;padding-right:0}
+.etiqueta-ubicacion{font-size:.8rem;background:#e9ecef;padding:4px 6px;border-radius:4px;color:#495057;font-weight:500}.acciones{display:flex;gap:6px}.sin-stock{color:#adb5bd;font-style:italic}
+.modal-overlay{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);justify-content:center;align-items:center;padding:20px}
+.modal-content{background:#fff;padding:20px;border-radius:8px;width:100%;max-width:360px;box-shadow:0 10px 25px rgba(0,0,0,.2);position:relative;animation:abrirModal .2s ease-out}
+@keyframes abrirModal{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}.close-btn{position:absolute;top:12px;right:16px;color:#adb5bd;font-size:28px;cursor:pointer}.fecha-venta{font-size:.8rem;color:#6c757d}
+</style>
+</head>
+<body>
+<header class="topbar"><button class="btn-menu-lateral" onclick="tSide()">☰</button><span class="app-title">X4SORT</span></header>
+<div id="side-over" class="sidebar-overlay" onclick="tSide()"></div>
+<aside id="side" class="sidebar">
+  <div class="sidebar-header"><h2>📊 Control General</h2><button class="btn-cerrar-sidebar" onclick="tSide()">×</button></div>
+  <div class="sidebar-content">
+    <div class="stat-box"><h3>Inventario Total</h3><p id="t-cam">0</p></div>
+    <div class="stat-box inv-valor"><h3>Valor Total Inventario</h3><p id="t-val-inv">$0.00</p></div>
+    <div class="stat-box dinero"><h3>Ingresos Totales</h3><p id="t-din">$0.00</p></div>
+    <h3 style="font-size:1rem;color:#495057;border-bottom:2px solid #eee;padding-bottom:5px;margin-top:25px">Detalle por Persona</h3>
+    <div id="l-ubi"></div>
+  </div>
+</aside>
+<main class="main-content">
+  <div class="container">
+    <h1>Inventario de Camisas</h1><h2>Agregar Producto</h2>
+    <form id="f-inv" class="form-group">
+      <input type="text" id="eq" placeholder="Equipo / Modelo" required>
+      <select id="ta" required><option value="" disabled selected>Selecciona Talla</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
+      <input type="text" id="ub" placeholder="¿Dónde está?" required>
+      <input type="number" id="ca" placeholder="Cantidad de camisas" min="1" required><input type="number" id="pr" placeholder="Precio ($)" step="0.01" min="0" required>
+      <button type="submit">Guardar en Inventario</button>
+    </form>
+    <h2 style="margin-top:20px">Listado de Stock</h2>
+    
+    <div class="filtro-box">
+      <div><label> Lugar:</label><select id="f-sel" onchange="apFiltro()"><option value="todas">Todos</option></select></div>
+      <div><label> Talla:</label><select id="f-tal" onchange="apFiltro()"><option value="todas">Todas</option></select></div>
+      <div style="flex:2;min-width:120px"><label> Nombre:</label><input type="text" id="f-nom" placeholder="Buscar equipo..." oninput="apFiltro()"></div>
     </div>
 
-    <div class="container">
-      <h1>Inventario de Camisas</h1>
+    <div class="table-responsive"><table><thead><tr><th>Modelo</th><th>Talla</th><th>Lugar</th><th>Stock</th><th>Precio</th><th>Acciones</th></tr></thead><tbody id="tb-inv"></tbody></table></div>
+  </div>
+  <div class="container">
+    <h2>Historial de Ventas</h2>
+    <div class="table-responsive"><table><thead><tr><th>Fecha</th><th>Modelo (Lugar)</th><th>Cant.</th><th>Ingreso</th></tr></thead><tbody id="tb-hist"></tbody></table></div>
+    <button class="btn-limpiar" onclick="limpHist()">Borrar Historial</button>
+  </div>
+</main>
 
-      <h2>Agregar Producto</h2>
-      <form id="formulario-inventario" class="form-group">
-        <input type="text" id="equipo" placeholder="Equipo / Modelo (Ej: Real Madrid)" required />
-        <select id="talla" required>
-          <option value="" disabled selected>Selecciona Talla</option>
-          <option value="S">S</option>
-          <option value="M">M</option>
-          <option value="L">L</option>
-          <option value="XL">XL</option>
-        </select>
-        <input type="text" id="ubicacion" placeholder="¿Dónde está? (Ej: Casa Carlos)" required />
-        <input type="number" id="cantidad" placeholder="Cantidad de camisas" min="1" required />
-        <input type="number" id="precio" placeholder="Precio de venta ($)" step="0.01" min="0" required />
-        <button type="submit" id="btn-guardar">Guardar en Inventario</button>
-      </form>
+<!-- Modal Venta -->
+<div id="mod-v" class="modal-overlay">
+  <div class="modal-content"><span class="close-btn" onclick="cerrarM()">×</span><h3>Registrar Venta</h3>
+    <p id="m-inf" style="font-weight:bold;margin-bottom:4px;color:#212529"></p><p id="m-stk" style="margin-top:0;font-size:.9rem;color:#6c757d;margin-bottom:15px"></p>
+    <div class="form-group"><label style="font-weight:500;font-size:14px">Cantidad vendida:</label><input type="number" id="m-ca" min="1" value="1"><button onclick="confV()" style="background:#0d6efd">Confirmar Venta</button></div>
+  </div>
+</div>
 
-      <h2>Listado de Stock</h2>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>Modelo</th>
-              <th>Talla</th>
-              <th>Lugar</th>
-              <th>Stock</th>
-              <th>Precio</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-inventario"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="container">
-      <h2>Historial de Ventas</h2>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Modelo (Lugar)</th>
-              <th>Talla</th>
-              <th>Cant.</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-historial"></tbody>
-        </table>
-      </div>
-      <button class="btn-limpiar" onclick="limpiarHistorial()">Borrar Historial</button>
-    </div>
-
-    <div id="modal-venta" class="modal-overlay">
-      <div class="modal-content">
-        <span class="close-btn" onclick="cerrarModal()">×</span>
-        <h3>Registrar Venta</h3>
-        <p id="info-producto-venta" style="font-weight: bold; margin-bottom: 4px; color:#212529;"></p>
-        <p id="info-stock-venta" style="margin-top: 0; font-size: 0.9rem; color: #6c757d; margin-bottom: 15px;"></p>
-
-        <div class="form-group">
-          <label for="cantidad-vender" style="font-weight: 500; font-size: 14px;">Cantidad vendida:</label>
-          <input type="number" id="cantidad-vender" min="1" value="1" />
-          <button onclick="confirmarVenta()" id="btn-confirmar-venta" style="background-color: #0d6efd;">Confirmar Venta</button>
-        </div>
-      </div>
-    </div>
-
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-      import { 
-        getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy 
-      } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-      // ⚠️ REEMPLAZA ESTOS DATOS CON LOS DE TU CONSOLA DE FIREBASE
-      const firebaseConfig = {
-    apiKey: "AIzaSyBgFUEi1SwD620PqESu2khrjpXL90hknk0",
-    authDomain: "inventario-e7fcb.firebaseapp.com",
-    projectId: "inventario-e7fcb",
-    storageBucket: "inventario-e7fcb.firebasestorage.app",
-    messagingSenderId: "835758443112",
-    appId: "1:835758443112:web:d1120943def2344f5989dd"
-  };
-
-      // Inicializar Firebase y Firestore
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-
-      // Estado local de la app (se sincroniza automáticamente con la nube)
-      let inventario = [];
-      let historialVentas = [];
-      let idProductoEnVenta = null;
-      const estadoPestanas = {};
-
-      // Elementos del DOM
-      const formulario = document.getElementById("formulario-inventario");
-      const tablaInventario = document.getElementById("tabla-inventario");
-      const tablaHistorial = document.getElementById("tabla-historial");
-      const tablaResumen = document.getElementById("tabla-resumen-ubicaciones");
-      const modalVenta = document.getElementById("modal-venta");
-
-      // --- ESCUCHADORES EN TIEMPO REAL (Firebase -> UI) ---
+<!-- Modal Eliminar Cantidad -->
+<div id="mod-del-cant" class="modal-overlay">
+  <div class="modal-content">
       
-      // Sincronizar Inventario
-      onSnapshot(collection(db, "inventario"), (snapshot) => {
-        inventario = [];
-        snapshot.forEach((doc) => {
-          inventario.push({ id: doc.id, ...doc.data() });
-        });
-        actualizarResumenUbicaciones();
-        actualizarTablaInventario();
-      });
+      <span class="close-btn" onclick="cerrarDelM()">×</span>
+      
+      <h3>Eliminar Cantidad</h3>
+    <p id="del-inf" style="font-weight:bold;margin-bottom:4px;color:#212529"></p><p id="del-stk" style="margin-top:0;font-size:.9rem;color:#6c757d;margin-bottom:15px"></p>
+    <div class="form-group"><label style="font-weight:500;font-size:14px">Cantidad a eliminar:</label><input type="number" id="del-cant-val" min="1" value="1"><button onclick="confDelCant()" style="background:#ffc107;color:#212529">Eliminar</button></div>
+  </div>
+</div>
 
-      // Sincronizar Historial (Ordenado por fecha más reciente)
-      const qHistorial = query(collection(db, "historial"), orderBy("timestamp", "desc"));
-      onSnapshot(qHistorial, (snapshot) => {
-        historialVentas = [];
-        snapshot.forEach((doc) => {
-          historialVentas.push({ id: doc.id, ...doc.data() });
-        });
-        actualizarTablaHistorial();
-      });
+<script type="module">
+  import{initializeApp}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import{getFirestore,collection,addDoc,doc,updateDoc,deleteDoc,onSnapshot,query,orderBy}from"https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  const db=getFirestore(initializeApp({apiKey:"AIzaSyBgFUEi1SwD620PqESu2khrjpXL90hknk0",authDomain:"inventario-e7fcb.firebaseapp.com",projectId:"inventario-e7fcb",storageBucket:"inventario-e7fcb.firebasestorage.app",messagingSenderId:"835758443112",appId:"1:835758443112:web:d1120943def2344f5989dd"}));
+  
+  let inv=[],hist=[],idV=null,idDelCant=null,estP={},fUbi="todas",fTal="todas",fNom="";
+  const g=i=>document.getElementById(i);
 
-      // --- FUNCIONES DE RENDERIZADO DE INTERFAZ ---
+  onSnapshot(collection(db,"inventario"),s=>{inv=s.docs.map(d=>({id:d.id,...d.data()}));actFiltro();renInv();calcStats();});
+  onSnapshot(query(collection(db,"historial"),orderBy("timestamp","desc")),s=>{hist=s.docs.map(d=>({id:d.id,...d.data()}));renHist();calcStats();});
 
-      function actualizarResumenUbicaciones() {
-        const conteo = inventario.reduce((acc, item) => {
-          const ubi = item.ubicacion || "No asignada";
-          acc[ubi] = (acc[ubi] || 0) + item.cantidad;
-          return acc;
-        }, {});
-        const ubicaciones = Object.entries(conteo);
-        if (ubicaciones.length === 0) {
-          tablaResumen.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#adb5bd;">Sin productos</td></tr>';
-          return;
-        }
-        tablaResumen.innerHTML = ubicaciones.map(([ubi, total]) => `<tr><td><strong>${ubi}</strong></td><td>${total} uds</td></tr>`).join("");
+  window.tSide=()=>{g("side").classList.toggle("abierto");g("side-over").style.display=g("side").classList.contains("abierto")?"block":"none";};
+  
+  window.apFiltro=()=>{fUbi=g("f-sel").value;fTal=g("f-tal").value;fNom=g("f-nom").value.toLowerCase().trim();renInv();};
+  
+  window.togP=(c)=>{estP[c]=!estP[c];renInv();};
+  
+  // Eliminar registro completo
+  window.elim=async(id)=>{if(confirm("¿Borrar todo el registro permanentemente?"))await deleteDoc(doc(db,"inventario",id));};
+  
+  // Abrir modal para eliminar cantidad
+  window.abrirDelCant=(id)=>{
+    let p=inv.find(i=>i.id===id);
+    if(!p)return;
+    idDelCant=id;
+    g("del-inf").innerText=`${p.equipo} (Talla ${p.talla})`;
+    g("del-stk").innerText=`Stock actual: ${p.cantidad} unidades en ${p.ubicacion}`;
+    g("del-cant-val").max=p.cantidad;
+    g("del-cant-val").value=1;
+    g("mod-del-cant").style.display="flex";
+  };
+  
+  // Confirmar eliminación de cantidad
+  window.confDelCant=async()=>{
+    let c=parseInt(g("del-cant-val").value);
+    let p=inv.find(i=>i.id===idDelCant);
+    if(p&&c>0&&c<=p.cantidad){
+      let nuevaCant=p.cantidad - c;
+      if(nuevaCant>0){
+        // Actualizar cantidad
+        await updateDoc(doc(db,"inventario",idDelCant),{cantidad:nuevaCant});
+      }else{
+        // Si llega a 0, eliminar el registro
+        await deleteDoc(doc(db,"inventario",idDelCant));
       }
+      cerrarDelM();
+    }else alert("Cantidad inválida.");
+  };
+  
+  window.cerrarDelM=()=>{g("mod-del-cant").style.display="none";idDelCant=null;};
+  
+  window.limpHist=async()=>{if(confirm("¿Borrar TODO el historial?"))for(let h of hist)await deleteDoc(doc(db,"historial",h.id));};
+  window.abrirM=(id)=>{let p=inv.find(i=>i.id===id);if(!p)return;idV=id;g("m-inf").innerText=`${p.equipo} (Talla ${p.talla})`;g("m-stk").innerText=`Disp: ${p.cantidad} en ${p.ubicacion}`;g("m-ca").max=p.cantidad;g("m-ca").value=1;g("mod-v").style.display="flex";};
+  window.cerrarM=()=>{g("mod-v").style.display="none";idV=null;};
 
-      function togglePestana(claveGrupo) {
-        estadoPestanas[claveGrupo] = !estadoPestanas[claveGrupo];
-        actualizarTablaInventario();
-      }
-
-      function actualizarTablaInventario() {
-        if (inventario.length === 0) {
-          tablaInventario.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#6c757d;">Inventario vacío.</td></tr>';
-          return;
-        }
-        const inventarioAgrupado = inventario.reduce((acc, item) => {
-          const clave = item.equipo.toUpperCase().trim();
-          if (!acc[clave]) acc[clave] = { nombreMostrar: item.equipo, items: [] };
-          acc[clave].items.push(item);
-          return acc;
-        }, {});
-
-        tablaInventario.innerHTML = Object.entries(inventarioAgrupado).map(([clave, grupo]) => {
-          estadoPestanas[clave] = estadoPestanas[clave] ?? true;
-          const estaAbierta = estadoPestanas[clave];
-          const claveEscapada = clave.replace(/'/g, "\\'");
-
-          let html = `<tr class="fila-grupo" onclick="togglePestana('${claveEscapada}')">
-            <td colspan="6">${grupo.nombreMostrar} <span class="icono-toggle">${estaAbierta ? "▼" : "▶"}</span></td>
-          </tr>`;
-
-          if (estaAbierta) {
-            html += grupo.items.map((item) => `
-              <tr>
-                <td class="celda-vacia">↳</td>
-                <td><strong>${item.talla}</strong></td>
-                <td><span class="etiqueta-ubicacion">${item.ubicacion}</span></td>
-                <td class="${item.cantidad === 0 ? "sin-stock" : ""}"><strong>${item.cantidad}</strong></td>
-                <td>$${item.precio}</td>
-                <td class="acciones">
-                  <button class="btn-vender" onclick="abrirModalVenta('${item.id}')" ${item.cantidad === 0 ? "disabled" : ""}>$</button>
-                  <button class="btn-eliminar" onclick="eliminarArticulo('${item.id}')">✕</button>
-                </td>
-              </tr>
-            `).join("");
-          }
-          return html;
-        }).join("");
-      }
-
- function actualizarTablaHistorial() {
-  if (historialVentas.length === 0) {
-    tablaHistorial.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#6c757d;">Ninguna venta grabada.</td></tr>';
-    return;
+  function calcStats(){
+    let tc=0,td=0,tvi=0,st={};
+    inv.forEach(i=>{
+      let u=i.ubicacion||"No asignada";
+      st[u]=st[u]||{s:0,d:0,vi:0};
+      st[u].s+=i.cantidad;
+      let valorItem=i.cantidad*i.precio;
+      st[u].vi+=valorItem;
+      tvi+=valorItem;
+      tc+=i.cantidad;
+    });
+    hist.forEach(v=>{let u=v.ubicacion||"No asignada";st[u]=st[u]||{s:0,d:0};st[u].d+=(v.totalVenta||0);td+=(v.totalVenta||0);});
+    
+    g("t-cam").innerText=tc+" uds";
+    g("t-din").innerText="$"+td.toFixed(2);
+    g("t-val-inv").innerText="$"+tvi.toFixed(2);
+    
+    g("l-ubi").innerHTML=Object.entries(st).map(([u,d])=>`<div class="detalle-ubicacion"><h4>${u}</h4><div><span>Stock actual:</span><span>${d.s} uds</span></div><div><span>Valor en inventario:</span><span class="dinero-ubi">$${d.vi.toFixed(2)}</span></div><div><span>Dinero generado:</span><span class="dinero-ubi">$${d.d.toFixed(2)}</span></div></div>`).join("")||'<p style="text-align:center;color:#adb5bd">Sin datos</p>';
   }
   
-  tablaHistorial.innerHTML = historialVentas.map((venta) => {
-    // 🛡️ Escudo: Si por alguna razón 'fecha' no existe, evita que la app se rompa
-    const fechaTexto = venta.fecha || "00/00/0000 00:00";
-    const partesFecha = fechaTexto.split(" ");
-    const fechaDia = partesFecha[0] || "S/F";
-    const fechaHora = partesFecha[1] || "";
+  function actFiltro(){
+    let us=[...new Set(inv.map(i=>i.ubicacion))].sort(), vU=g("f-sel").value;
+    g("f-sel").innerHTML='<option value="todas">Todos</option>'+us.map(u=>`<option value="${u}">${u}</option>`).join("");
+    g("f-sel").value=us.includes(vU)?vU:"todas";fUbi=g("f-sel").value;
+    
+    let ts=[...new Set(inv.map(i=>i.talla))].sort(), vT=g("f-tal").value;
+    g("f-tal").innerHTML='<option value="todas">Todas</option>'+ts.map(t=>`<option value="${t}">${t}</option>`).join("");
+    g("f-tal").value=ts.includes(vT)?vT:"todas";fTal=g("f-tal").value;
+  }
+  
+  function renInv(){
+    let f=inv.filter(i=>(fUbi==="todas"||i.ubicacion===fUbi)&&(fTal==="todas"||i.talla===fTal)&&(fNom===""||i.equipo.toLowerCase().includes(fNom)));
+    if(!f.length)return g("tb-inv").innerHTML='<tr><td colspan="6" align="center" style="color:#6c757d">Sin productos con esos filtros</td></tr>';
+    
+    let grp=f.reduce((a,i)=>{let c=i.equipo.toUpperCase().trim();a[c]=a[c]||{n:i.equipo,is:[]};a[c].is.push(i);return a;},{});
+    g("tb-inv").innerHTML=Object.entries(grp).map(([c,gr])=>{
+      estP[c]=estP[c]??true; let o=estP[c];
+      let h=`<tr class="fila-grupo" onclick="togP('${c.replace(/'/g,"\\'")}')"><td colspan="6">${gr.n} <span class="icono-toggle">${o?"▼":"▶"}</span></td></tr>`;
+      if(o)h+=gr.is.map(i=>`<tr><td class="celda-vacia">↳</td><td><b>${i.talla}</b></td><td><span class="etiqueta-ubicacion">${i.ubicacion}</span></td><td class="${!i.cantidad?'sin-stock':''}">${i.cantidad?`<b>${i.cantidad}</b>`:i.cantidad}</td><td>$${i.precio}</td><td class="acciones">
+        <button class="btn-vender" onclick="abrirM('${i.id}')" ${!i.cantidad?'disabled':''}>$</button>
+        <button class="btn-eliminar-cant" onclick="abrirDelCant('${i.id}')" ${!i.cantidad?'disabled':''}>✎</button>
+        <button class="btn-eliminar-todo" onclick="elim('${i.id}')">✕</button>
+      </td></tr>`).join("");
+      return h;
+    }).join("");
+  }
+  
+  function renHist(){
+    g("tb-hist").innerHTML=hist.length?hist.map(v=>{let f=(v.fecha||"S/F ").split(" ");return`<tr><td class="fecha-venta">${f[0]}<br><small>${f[1]||''}</small></td><td>${v.equipo||"Modelo"} (${v.talla||"-"})<br><small style="color:#6c757d">(${v.ubicacion||"Sin lugar"})</small></td><td><b>${v.cantidadVendida||0}</b></td><td class="ganancia-venta">$${(v.totalVenta||0).toFixed(2)}</td></tr>`}).join(""):'<tr><td colspan="4" align="center" style="color:#6c757d">Ninguna venta grabada.</td></tr>';
+  }
 
-    return `
-      <tr>
-        <td class="fecha-venta">${fechaDia}<br><small>${fechaHora}</small></td>
-        <td>${venta.equipo || "Modelo"} <br><small style="color:#6c757d;">(${venta.ubicacion || "Sin lugar"})</small></td>
-        <td>${venta.talla || "-"}</td>
-        <td><strong>${venta.cantidadVendida || 0}</strong></td>
-      </tr>
-    `;
-  }).join("");
-}
-
-
-      // --- ACCIONES ESCRITURA EN FIREBASE (CRUD) ---
-
-      // Agregar nuevo producto a Firestore
-      formulario.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const equipo = document.getElementById("equipo").value.trim();
-        const talla = document.getElementById("talla").value;
-        const ubicacion = document.getElementById("ubicacion").value.trim();
-        const cantidad = parseInt(document.getElementById("cantidad").value, 10);
-        const precio = parseFloat(document.getElementById("precio").value);
-
-        try {
-          await addDoc(collection(db, "inventario"), {
-            equipo, talla, ubicacion, cantidad, precio
-          });
-
-          // Limpiar inputs
-          document.getElementById("cantidad").value = "";
-          document.getElementById("precio").value = "";
-          document.getElementById("equipo").focus();
-        } catch (error) {
-          console.error("Error al agregar producto: ", error);
-        }
-      });
-
-      // Eliminar de Firestore
-      async function eliminarArticulo(id) {
-        if (confirm("¿Borrar este registro permanentemente de la nube?")) {
-          try {
-            await deleteDoc(doc(db, "inventario", id));
-          } catch (error) {
-            console.error("Error al eliminar: ", error);
-          }
-        }
-      }
-
-      // Confirmar venta (Resta del stock y añade al historial)
-      async function confirmarVenta() {
-        const cant = parseInt(document.getElementById("cantidad-vender").value, 10);
-        const producto = inventario.find((item) => item.id === idProductoEnVenta);
-
-        if (producto && cant > 0 && cant <= producto.cantidad) {
-          try {
-            // 1. Actualizar el stock del producto
-            const productoRef = doc(db, "inventario", idProductoEnVenta);
-            await updateDoc(productoRef, {
-              cantidad: producto.cantidad - cant
-            });
-
-            // 2. Crear el reporte en la colección "historial"
-            const f = new Date();
-            await addDoc(collection(db, "historial"), {
-              equipo: producto.equipo,
-              talla: producto.talla,
-              ubicacion: producto.ubicacion,
-              cantidadVendida: cant,
-              fecha: `${f.toLocaleDateString()} ${f.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
-              timestamp: Date.now() // Sirve para ordenar cronológicamente
-            });
-
-            cerrarModal();
-          } catch (error) {
-            console.error("Error al procesar la venta: ", error);
-          }
-        } else { 
-          alert("Cantidad inválida."); 
-        }
-      }
-
-      // Limpiar historial completo en bucle
-      async function limpiarHistorial() {
-        if (confirm("¿Borrar TODO el historial de ventas de la base de datos?")) {
-          try {
-            for (const venta of historialVentas) {
-              await deleteDoc(doc(db, "historial", venta.id));
-            }
-          } catch (error) {
-            console.error("Error al limpiar historial: ", error);
-          }
-        }
-      }
-
-      // --- CONTROL DEL MODAL DE VENTAS ---
-
-      function abrirModalVenta(id) {
-        const producto = inventario.find((item) => item.id === id);
-        if (!producto) return;
-        idProductoEnVenta = id;
-        document.getElementById("info-producto-venta").innerText = `${producto.equipo} (Talla ${producto.talla})`;
-        document.getElementById("info-stock-venta").innerText = `Disponibles: ${producto.cantidad} unidades en ${producto.ubicacion}`;
-        const inputC = document.getElementById("cantidad-vender");
-        inputC.value = 1;
-        inputC.max = producto.cantidad;
-        modalVenta.style.display = "flex";
-      }
-
-      function cerrarModal() { 
-        modalVenta.style.display = "none"; 
-        idProductoEnVenta = null; 
-      }
-
-      // Vincular funciones al objeto global 'window' para que sigan funcionando los onclick del HTML
-      window.togglePestana = togglePestana;
-      window.abrirModalVenta = abrirModalVenta;
-      window.eliminarArticulo = eliminarArticulo;
-      window.cerrarModal = cerrarModal;
-      window.confirmarVenta = confirmarVenta;
-      window.limpiarHistorial = limpiarHistorial;
-    </script>
-  </body>
-</html>
+  // --- LÓGICA DE AGRUPACIÓN INTELIGENTE CON PRECIO ---
+  g("f-inv").onsubmit=async(e)=>{
+    e.preventDefault();
+    let eq=g("eq").value.trim(),ta=g("ta").value,ub=g("ub").value.trim(),ca=parseInt(g("ca").value),pr=parseFloat(g("pr").value);
+    
+    let ex=inv.find(i=>i.equipo.toLowerCase()===eq.toLowerCase() && i.talla===ta && i.ubicacion.toLowerCase()===ub.toLowerCase() && i.precio===pr);
+    
+    if(ex){
+      await updateDoc(doc(db,"inventario",ex.id),{cantidad:ex.cantidad+ca});
+    }else{
+      await addDoc(collection(db,"inventario"),{equipo:eq,talla:ta,ubicacion:ub,cantidad:ca,precio:pr});
+    }
+    
+    g("ca").value="";g("pr").value="";g("eq").focus();
+  };
+  
+  window.confV=async()=>{
+    let c=parseInt(g("m-ca").value),p=inv.find(i=>i.id===idV);
+    if(p&&c>0&&c<=p.cantidad){
+      await updateDoc(doc(db,"inventario",idV),{cantidad:p.cantidad-c});
+      let d=new Date();
+      await addDoc(collection(db,"historial"),{equipo:p.equipo,talla:p.talla,ubicacion:p.ubicacion,cantidadVendida:c,precioUnitario:p.precio,totalVenta:c*p.precio,fecha:`${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`,timestamp:Date.now()});
+      cerrarM();
+    }else alert("Cantidad inválida.");
+  };
+</script>
+</body>
+    </html>
+  
